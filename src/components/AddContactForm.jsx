@@ -1,5 +1,10 @@
 import { useState } from 'react'
 
+/**
+ * Simple Add Contact form.
+ * Keeps local state for the three fields and calls onAdd with the trimmed payload.
+ */
+
 export default function AddContactForm({ onAdd }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -7,8 +12,9 @@ export default function AddContactForm({ onAdd }) {
 
   function submit(e) {
     e.preventDefault()
-    if (!name.trim()) return
-    onAdd({ name: name.trim(), email: email.trim(), phone: phone.trim() })
+    const trimmedName = name.trim()
+    if (!trimmedName) return
+    onAdd({ name: trimmedName, email: email.trim(), phone: phone.trim() })
     setName(''); setEmail(''); setPhone('')
   }
 

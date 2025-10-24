@@ -6,16 +6,21 @@ function formatTimestamp(ts) {
   try { return new Date(ts).toLocaleString() } catch { return '' }
 }
 
+/**
+ * SearchBar
+ * - Small, reusable search input with a recent-searches dropdown.
+ * - Persists up to 5 recent terms in localStorage.
+ */
 export default function SearchBar({ value, onChange }) {
   const [focused, setFocused] = useState(false)
   const [recents, setRecents] = useState([])
   const wrapperRef = useRef(null)
 
+  // Load persisted recent searches once on mount
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
       const parsed = raw ? JSON.parse(raw) : []
-      // support legacy array of strings
       const normalized = parsed.map(p => typeof p === 'string' ? { term: p, ts: Date.now() } : p)
       setRecents(normalized.slice(0,5))
     } catch (e) {
@@ -23,17 +28,17 @@ export default function SearchBar({ value, onChange }) {
     }
   }, [])
 
+  // Save a term to recents (dedupe by term, keep latest 5)
   function saveRecent(next) {
     try {
       const term = next.trim()
       if (!term) return
-      // dedupe case-insensitively
       const existing = recents.filter(r => r.term.toLowerCase() !== term.toLowerCase())
       const updated = [{ term, ts: Date.now() }, ...existing].slice(0, 5)
       setRecents(updated)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
     } catch (e) {
-      // ignore
+      // ignore storage errors
     }
   }
 
@@ -45,9 +50,7 @@ export default function SearchBar({ value, onChange }) {
   function handleKeyDown(e) {
     if (e.key === 'Enter') {
       const q = (value || '').trim()
-      if (q) {
-        saveRecent(q)
-      }
+      if (q) saveRecent(q)
     }
   }
 
@@ -84,7 +87,7 @@ export default function SearchBar({ value, onChange }) {
             <div className="text-sm text-slate-500">Recent searches</div>
             <button onMouseDown={(e) => { e.preventDefault(); clearRecents() }} className="text-xs text-slate-500 hover:underline">Clear</button>
           </div>
-          {recents.map((r, i) => (
+          {recents.map((r) => (
             <button
               key={r.term + r.ts}
               onMouseDown={(e) => { e.preventDefault(); handleSelectRecent(r) }}
