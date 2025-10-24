@@ -4,7 +4,7 @@ I built a single-page Contacts app with React and Vite to satisfy the Tria assig
 
 ## Live demo
 
-I haven't deployed the repository for you, but the project is ready for deployment (Vercel/Netlify/GitHub Pages). If you want, I can deploy and add the public URL to this README.
+https://contacts-smoky-theta.vercel.app/
 
 ## What I implemented
 
