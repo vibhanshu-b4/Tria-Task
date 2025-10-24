@@ -30,12 +30,16 @@ function useLocalStorage(key, initial) {
 
 export default function App() {
   const [contacts, setContacts] = useLocalStorage('contacts:v1', initialContacts)
+  const [favs, setFavs] = useLocalStorage('favs:v1', [])
   const [query, setQuery] = useState('')
+  const [showFavs, setShowFavs] = useState(true)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return contacts
-    return contacts.filter(c => c.name.toLowerCase().includes(q))
+    // always sort contacts lexicographically by name, then filter
+    const sorted = [...contacts].sort((a, b) => a.name.localeCompare(b.name))
+    if (!q) return sorted
+    return sorted.filter(c => c.name.toLowerCase().includes(q))
   }, [contacts, query])
 
   function addContact(payload) {
@@ -44,6 +48,12 @@ export default function App() {
 
   function removeContact(id) {
     setContacts(prev => prev.filter(c => c.id !== id))
+    // also remove from favourites if present
+    setFavs(prev => prev.filter(x => x !== id))
+  }
+
+  function toggleFavorite(id) {
+    setFavs(prev => prev.includes(id) ? prev.filter(x => x !== id) : [id, ...prev])
   }
 
   return (
@@ -56,7 +66,24 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <ContactList contacts={filtered} onRemove={removeContact} />
+            {/* Favourites section (appears before all contacts) */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl font-semibold">Favourites ({favs.length})</h2>
+                <button onClick={() => setShowFavs(s => !s)} className="text-sm px-3 py-1 rounded border hover:bg-slate-100">
+                  {showFavs ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              <div className={`fav-wrap ${showFavs ? '' : 'hidden'}`}>
+                <ContactList contacts={filtered.filter(c => favs.includes(c.id))} onRemove={removeContact} onToggleFavorite={toggleFavorite} favIds={favs} isFavSection={true} onUnfavouriteAnimated={(id) => setFavs(prev => prev.filter(x => x !== id))} />
+              </div
+>
+            </div>
+
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold mb-2">All Contacts</h2>
+              <ContactList contacts={filtered} onRemove={removeContact} onToggleFavorite={toggleFavorite} favIds={favs} />
+            </div>
           </div>
           <div>
             <AddContactForm onAdd={addContact} />

@@ -21,3 +21,54 @@
 /* small app-level utilities */
 .app-max { max-width: 1100px; }
 .glass { background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4)); backdrop-filter: blur(6px); }
+
+/* small entry animation used by contact cards */
+.fade-pop {
+  transform-origin: center;
+  animation: fadePop 260ms cubic-bezier(.2,.9,.3,1);
+}
+@keyframes fadePop {
+  0% { opacity: 0; transform: scale(.98) translateY(6px); }
+  60% { opacity: 1; transform: scale(1.02) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes fadePopExit {
+  0% { opacity: 1; transform: scale(1) translateY(0); }
+  60% { opacity: 0.6; transform: scale(0.98) translateY(6px); }
+  100% { opacity: 0; transform: scale(0.96) translateY(10px); }
+}
+
+.fade-pop-exit {
+  animation: fadePopExit 240ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+/* favourites collapse animation wrapper */
+.fav-wrap {
+  overflow: hidden;
+  transition: max-height 320ms cubic-bezier(.2,.8,.2,1), opacity 260ms ease, transform 260ms ease;
+  max-height: 2000px; /* large enough for lists */
+  opacity: 1;
+  transform: translateY(0);
+}
+.fav-wrap.hidden {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* star pulse micro animation */
+.star-pulse {
+  animation: starPulse 260ms cubic-bezier(.2,.9,.3,1);
+}
+@keyframes starPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* helper to ensure transform transitions are smooth */
+.flip-anim {
+  transition: transform 320ms cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
