@@ -13,14 +13,14 @@ export default function AddContactForm({ onAdd }) {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-lg border border-slate-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-800">
+    <form onSubmit={submit} className="rounded-lg p-6 panel card-shadow">
       <h2 className="text-lg font-semibold mb-3">Add Contact</h2>
       <div className="space-y-3">
         <input className="w-full px-3 py-2 rounded border border-slate-200 dark:border-slate-700" placeholder="Full name" value={name} onChange={e => setName(e.target.value)} />
         <input className="w-full px-3 py-2 rounded border border-slate-200 dark:border-slate-700" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
         <input className="w-full px-3 py-2 rounded border border-slate-200 dark:border-slate-700" placeholder="Phone" value={phone} onChange={e => setPhone(e.target.value)} />
         <div className="flex justify-end">
-          <button type="submit" className="px-4 py-2 rounded bg-sky-600 text-white hover:bg-sky-700">Add</button>
+          <button type="submit" className="px-4 py-2 rounded btn-accent btn-ripple">Add</button>
         </div>
       </div>
     </form>

@@ -42,6 +42,9 @@ export default function App() {
     return sorted.filter(c => c.name.toLowerCase().includes(q))
   }, [contacts, query])
 
+  // cached list of favourite contacts (only for display in the favourites area)
+  const favContacts = filtered.filter(c => favs.includes(c.id))
+
   function addContact(payload) {
     setContacts(prev => [{ id: Date.now(), ...payload }, ...prev])
   }
@@ -57,36 +60,43 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="app-max w-full mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">Contacts</h1>
-          <SearchBar value={query} onChange={setQuery} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            {/* Favourites section (appears before all contacts) */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xl font-semibold">Favourites ({favs.length})</h2>
-                <button onClick={() => setShowFavs(s => !s)} className="text-sm px-3 py-1 rounded border hover:bg-slate-100">
-                  {showFavs ? 'Hide' : 'Show'}
-                </button>
-              </div>
-              <div className={`fav-wrap ${showFavs ? '' : 'hidden'}`}>
-                <ContactList contacts={filtered.filter(c => favs.includes(c.id))} onRemove={removeContact} onToggleFavorite={toggleFavorite} favIds={favs} isFavSection={true} onUnfavouriteAnimated={(id) => setFavs(prev => prev.filter(x => x !== id))} />
-              </div
->
-            </div>
-
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold mb-2">All Contacts</h2>
-              <ContactList contacts={filtered} onRemove={removeContact} onToggleFavorite={toggleFavorite} favIds={favs} />
-            </div>
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="app-max w-full mx-auto z-10">
+        <div className="panel p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-3xl font-bold">Contacts</h1>
+            <SearchBar value={query} onChange={setQuery} />
           </div>
-          <div>
-            <AddContactForm onAdd={addContact} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              {/* Favourites section (appears before all contacts) */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-xl font-semibold">Favourites ({favs.length})</h2>
+                  <button onClick={() => setShowFavs(s => !s)} className="text-sm px-3 py-1 rounded bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 btn-ripple">
+                    {showFavs ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                <div className={`fav-wrap ${showFavs ? '' : 'hidden'}`}>
+                  {favContacts.length === 0 ? (
+                    <div className="p-4 rounded-lg border border-dashed border-slate-200 dark:border-slate-700 text-center text-sm text-slate-500 dark:text-slate-400">
+                      No favourites yet — add favourites to see them here.
+                    </div>
+                  ) : (
+                    <ContactList contacts={favContacts} onRemove={removeContact} onToggleFavorite={toggleFavorite} favIds={favs} isFavSection={true} onUnfavouriteAnimated={(id) => setFavs(prev => prev.filter(x => x !== id))} />
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold mb-2">All Contacts</h2>
+                <ContactList contacts={filtered} onRemove={removeContact} onToggleFavorite={toggleFavorite} favIds={favs} />
+              </div>
+            </div>
+            <div>
+              <AddContactForm onAdd={addContact} />
+            </div>
           </div>
         </div>
       </div>

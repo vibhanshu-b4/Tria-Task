@@ -7,6 +7,30 @@
     <title>tria-task</title>
   </head>
   <body>
+    <!-- decorative background blobs -->
+    <svg class="bg-blob blob-1 bg-anim" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1">
+          <stop offset="0%" stop-color="#7c3aed" />
+          <stop offset="100%" stop-color="#60a5fa" />
+        </linearGradient>
+      </defs>
+      <g fill="url(#g1)">
+        <circle cx="200" cy="200" r="200" />
+      </g>
+    </svg>
+    <svg class="bg-blob blob-2 bg-anim" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <defs>
+        <linearGradient id="g2" x1="0" x2="1">
+          <stop offset="0%" stop-color="#f59e0b" />
+          <stop offset="100%" stop-color="#fb7185" />
+        </linearGradient>
+      </defs>
+      <g fill="url(#g2)">
+        <circle cx="300" cy="300" r="260" />
+      </g>
+    </svg>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
