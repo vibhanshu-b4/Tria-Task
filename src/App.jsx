@@ -4,16 +4,26 @@ import SearchBar from './components/SearchBar'
 import AddContactForm from './components/AddContactForm'
 
 const initialContacts = [
-  { id: 1, name: 'Ava Johnson', email: 'ava.johnson@example.com', phone: '+1 555-0123' },
-  { id: 2, name: 'Liam Smith', email: 'liam.smith@example.com', phone: '+1 555-0456' },
-  { id: 3, name: 'Sophia Lee', email: 'sophia.lee@example.com', phone: '+1 555-0789' },
+  // only the user-requested default contact remains here so any fresh run shows this one contact
+  { id: 1000000001, name: 'Jon Snow', email: 'JonSnow@gmail.com' },
 ]
 
 function useLocalStorage(key, initial) {
   const [state, setState] = useState(() => {
     try {
       const raw = localStorage.getItem(key)
-      return raw ? JSON.parse(raw) : initial
+      if (!raw) return initial
+      const parsed = JSON.parse(raw)
+
+      // if initial is an array of default items (like contacts), ensure defaults exist
+      if (Array.isArray(parsed) && Array.isArray(initial) && initial.length > 0) {
+        // add any default items (by email) that are missing from stored list
+        const missing = initial.filter(def => !parsed.some(p => p && p.email && p.email.toLowerCase() === def.email.toLowerCase()))
+        if (missing.length > 0) {
+          return [...missing, ...parsed]
+        }
+      }
+      return parsed
     } catch (e) {
       return initial
     }
